@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#071321">
+  <title>BHARAT SHIELD | Smart Border Command</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<div class="app-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#overview">
+      <span class="brand-mark">🇮🇳</span>
+      <span>
+        <strong>BHARAT SHIELD</strong>
+        <small>SMART BORDER COMMAND</small>
+      </span>
+    </a>
+
+    <div class="nav-label">COMMAND MENU</div>
+
+    <nav class="nav-links">
+      <a class="nav-link active" href="#overview"><span>◈</span> Overview</a>
+      <a class="nav-link" href="#map-section"><span>▧</span> India Map</a>
+      <a class="nav-link" href="#drones"><span>✣</span> Drone Fleet</a>
+      <a class="nav-link" href="#cctv"><span>▣</span> CCTV Console</a>
+      <a class="nav-link" href="#sensors"><span>⌁</span> Sensors & Thermal</a>
+      <a class="nav-link" href="#commander"><span>⚑</span> Commander Reports</a>
+      <a class="nav-link" href="#bug-report"><span>⚙</span> Bug Reports</a>
+      <a class="nav-link" href="#resources"><span>↗</span> Resources</a>
+      <a class="nav-link" href="#settings"><span>☷</span> Settings</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <span class="pulse-dot"></span>
+      DEMO ENVIRONMENT
+      <small>Not connected to operational systems</small>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="sms-alert-strip">
+          <span class="sms-pulse"></span>
+          <strong>SMS ALERT</strong>
+          <span id="smsAlertText">Demo channel ready · no real SMS is sent</span>
+          <button type="button" id="testSmsButton">TEST ALERT</button>
+        </div>
+        <button class="mobile-menu" id="mobileMenu">☰</button>
+      </div>
+
+      <div>
+        <div class="eyebrow">NATIONAL MONITORING INTERFACE</div>
+        <h1>Command Overview</h1>
+        <p class="muted">Unified demonstration dashboard · India</p>
+      </div>
+
+      <div class="top-actions">
+        <div class="clock-box">
+          <span class="live-dot"></span>
+          <span id="clock">--</span>
+        </div>
+
+        <button class="icon-button" id="notificationButton">
+          ♢<span class="notification-count" id="notificationCount">0</span>
+        </button>
+
+        <button class="admin-chip" id="topLoginButton">
+          Sign in as admin
+        </button>
+      </div>
+    </header>
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="section-block">
+      <div class="welcome-row">
+        <div>
+          <div class="eyebrow">SYSTEM SNAPSHOT</div>
+          <h2>Situation Dashboard</h2>
+        </div>
+        <span class="demo-badge">● SIMULATED DATA</span>
+      </div>
+
+      <div class="metric-grid">
+        <article class="metric-card">
+          <div class="metric-top">
+            <span>System State</span>
+            <span class="metric-icon green">◉</span>
+          </div>
+          <strong class="metric-value" id="systemState">NORMAL</strong>
+          <small>Demo status only</small>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-top">
+            <span>Drone Units</span>
+            <span class="metric-icon blue">✣</span>
+          </div>
+          <strong class="metric-value">04 <em>/ 04</em></strong>
+          <small>Simulated fleet</small>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-top">
+            <span>Sensor Nodes</span>
+            <span class="metric-icon purple">⌁</span>
+          </div>
+          <strong class="metric-value" id="sensorCount">08 <em>online</em></strong>
+          <small>Illustrative sensors</small>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-top">
+            <span>Open Reports</span>
+            <span class="metric-icon amber">⚑</span>
+          </div>
+          <strong class="metric-value" id="openReports">00</strong>
+          <small>Awaiting review in demo</small>
+        </article>
+      </div>
+    </section>
+
+    <!-- INDIA MAP -->
+    <section id="map-section" class="panel section-block">
+      <div class="panel-heading">
+        <div>
+          <div class="eyebrow">GEOSPATIAL VIEW</div>
+          <h2>India Map & Imagery</h2>
+          <p class="muted">Switch between street map and public satellite imagery.</p>
+        </div>
+
+        <div class="button-row">
+          <button class="small-button active" id="streetMapButton">Street</button>
+          <button class="small-button" id="satelliteMapButton">Satellite Imagery</button>
+        </div>
+      </div>
+
+      <div id="indiaMap"></div>
+
+      <div class="map-legend">
+        <span><i class="legend-dot green-bg"></i> Demo marker</span>
+        <span><i class="legend-dot amber-bg"></i> Sample event</span>
+        <span class="muted">Internet connection required.</span>
+      </div>
+    </section>
+
+    <!-- DRONES -->
+    <section id="drones" class="section-block">
+      <div class="panel-heading section-heading">
+        <div>
+          <div class="eyebrow">FLEET OVERVIEW</div>
+          <h2>Drone Monitoring · 4 Units</h2>
+          <p class="muted">Simulated drone telemetry for project demonstration.</p>
+        </div>
+        <span class="status-pill status-ok">4 DEMO UNITS</span>
+      </div>
+
+      <div class="drone-grid" id="droneGrid">
+
+        <article class="drone-card">
+          <div class="drone-head">
+            <span class="drone-symbol">✣</span>
+            <span class="status-pill status-ok">ONLINE</span>
+          </div>
+          <h3>Falcon-01</h3>
+          <p class="muted">Demo Unit · Sector A</p>
+          <div class="drone-stats"><span>Battery</span><strong id="battery0">92%</strong></div>
+          <div class="progress"><span id="bar0" style="width:92%"></span></div>
+          <div class="drone-stats"><span>Link Quality</span><strong>Excellent</strong></div>
+        </article>
+
+        <article class="drone-card">
+          <div class="drone-head">
+            <span class="drone-symbol">✣</span>
+            <span class="status-pill status-ok">ONLINE</span>
+          </div>
+          <h3>Falcon-02</h3>
+          <p class="muted">Demo Unit · Sector B</p>
+          <div class="drone-stats"><span>Battery</span><strong id="battery1">85%</strong></div>
+          <div class="progress"><span id="bar1" style="width:85%"></span></div>
+          <div class="drone-stats"><span>Link Quality</span><strong>Good</strong></div>
+        </article>
+
+        <article class="drone-card">
+          <div class="drone-head">
+            <span class="drone-symbol">✣</span>
+            <span class="status-pill status-ok">ONLINE</span>
+          </div>
+          <h3>Falcon-03</h3>
+          <p class="muted">Demo Unit · Sector C</p>
+          <div class="drone-stats"><span>Battery</span><strong id="battery2">78%</strong></div>
+          <div class="progress"><span id="bar2" style="width:78%"></span></div>
+          <div class="drone-stats"><span>Link Quality</span><strong>Good</strong></div>
+        </article>
+
+        <article class="drone-card">
+          <div class="drone-head">
+            <span class="drone-symbol">✣</span>
+            <span class="status-pill status-ok">ONLINE</span>
+          </div>
+          <h3>Falcon-04</h3>
+          <p class="muted">Demo Unit · Sector D</p>
+          <div class="drone-stats"><span>Battery</span><strong id="battery3">67%</strong></div>
+          <div class="progress"><span id="bar3" style="width:67%"></span></div>
+          <div class="drone-stats"><span>Link Quality</span><strong>Stable</strong></div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- CCTV -->
+    <section id="cctv" class="panel section-block">
+      <div class="panel-heading">
+        <div>
+          <div class="eyebrow">VIDEO MONITORING DEMO</div>
+          <h2>CCTV Control Console</h2>
+          <p class="muted">Sample camera panels only; no physical camera is connected.</p>
+        </div>
+        <span class="status-pill status-info">SIMULATED FEEDS</span>
+      </div>
+
+      <div class="cctv-grid">
+
+        <article class="camera-card">
+          <div class="camera-view">
+            <span class="camera-reticle">＋</span>
+            <span class="camera-label">CAM-01 · DEMO FEED</span>
+            <span class="scan-line"></span>
+          </div>
+          <div class="camera-controls">
+            <strong>Camera 01</strong>
+            <span class="status-pill status-ok">ONLINE</span>
+            <div class="button-row">
+              <button class="small-button camera-action" data-action="Pan left">← Pan</button>
+              <button class="small-button camera-action" data-action="Center">Center</button>
+              <button class="small-button camera-action" data-action="Pan right">Pan →</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="camera-card">
+          <div class="camera-view camera-view-two">
+            <span class="camera-reticle">＋</span>
+            <span class="camera-label">CAM-02 · DEMO FEED</span>
+            <span class="scan-line"></span>
+          </div>
+          <div class="camera-controls">
+            <strong>Camera 02</strong>
+            <span class="status-pill status-ok">ONLINE</span>
+            <div class="button-row">
+              <button class="small-button camera-action" data-action="Zoom in">＋ Zoom</button>
+              <button class="small-button camera-action" data-action="Center">Center</button>
+              <button class="small-button camera-action" data-action="Zoom out">− Zoom</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="camera-card">
+          <div class="camera-view camera-view-three">
+            <span class="camera-reticle">＋</span>
+            <span class="camera-label">CAM-03 · DEMO FEED</span>
+            <span class="scan-line"></span>
+          </div>
+          <div class="camera-controls">
+            <strong>Camera 03</strong>
+            <span class="status-pill status-ok">ONLINE</span>
+            <div class="button-row">
+              <button class="small-button camera-action" data-action="Pan left">← Pan</button>
+              <button class="small-button camera-action" data-action="Center">Center</button>
+              <button class="small-button camera-action" data-action="Pan right">Pan →</button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <p class="inline-note" id="cameraMessage">Choose a demo control to see its simulated response.</p>
+    </section>
+
+    <!-- SENSORS -->
+    <section id="sensors" class="panel section-block">
+      <div class="panel-heading">
+        <div>
+          <div class="eyebrow">ENVIRONMENTAL MONITORING DEMO</div>
+          <h2>Sensor & Thermal Detection</h2>
+          <p class="muted">Synthetic readings for interface testing.</p>
+        </div>
+        <button class="small-button" id="runSensorCheck">Run Demo Sensor Check</button>
+      </div>
+
+      <div class="sensor-grid">
+
+        <article class="sensor-card">
+          <div class="sensor-head">
+            <span>Motion Sensor</span>
+            <span class="status-pill status-ok" id="motionState">NORMAL</span>
+          </div>
+          <strong id="motionValue">No event</strong>
+          <small>Sample node MS-01</small>
+        </article>
+
+        <article class="sensor-card">
+          <div class="sensor-head">
+            <span>Fence Vibration</span>
+            <span class="status-pill status-ok" id="vibrationState">NORMAL</span>
+          </div>
+          <strong id="vibrationValue">Low</strong>
+          <small>Sample node FV-02</small>
+        </article>
+
+        <article class="sensor-card">
+          <div class="sensor-head">
+            <span>Thermal Sensor</span>
+            <span class="status-pill status-ok" id="thermalState">NORMAL</span>
+          </div>
+          <strong id="thermalValue">24.8 °C</strong>
+          <small>Illustrative ambient reading</small>
+        </article>
+
+        <article class="sensor-card">
+          <div class="sensor-head">
+            <span>Network Health</span>
+            <span class="status-pill status-ok">STABLE</span>
+          </div>
+          <strong>98.6%</strong>
+          <small>Simulated availability</small>
+        </article>
+
+      </div>
+
+      <div class="alert-strip" id="sensorAlert">
+        <span>●</span>
+        <div>
+          <strong>All demo sensors normal</strong>
+          <small>No simulated event currently active.</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMANDER REPORT -->
+    <section id="commander" class="panel section-block">
+      <div class="panel-heading">
+        <div>
+          <div class="eyebrow">REPORT WORKFLOW</div>
+          <h2>Report to Army Commander</h2>
+          <p class="muted">Creates a local demonstration record and status; it does not transmit to the Army.</p>
+        </div>
+        <span class="status-pill status-info">LOCAL DEMO WORKFLOW</span>
+      </div>
+
+      <form id="commanderForm" class="form-grid">
+
+        <label>
+          Reporter Name
+          <input id="commanderReporter" required maxlength="60" placeholder="Enter your name">
+        </label>
+
+        <label>
+          Report Category
+          <select id="commanderCategory" required>
+            <option value="">Choose category</option>
+            <option>Equipment issue</option>
+            <option>Infrastructure concern</option>
+            <option>Safety observation</option>
+            <option>Training/demo feedback</option>
+            <option>Other</option>
+          </select>
+        </label>
+
+        <label class="full-width">
+          Report Details
+          <textarea id="commanderDetails" required maxlength="1000" placeholder="Describe the issue or observation. Do not enter sensitive information."></textarea>
+        </label>
+
+        <div class="full-width form-footer">
+          <small class="muted">For real emergencies, contact official emergency services.</small>
+          <button class="primary-button" type="submit">Submit Demo Report ↗</button>
+        </div>
+      </form>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Report ID</th>
+              <th>Category</th>
+              <th>Submitted</th>
+              <th>Status</th>
+              <th>Demo Action</th>
+            </tr>
+          </thead>
+          <tbody id="commanderReportRows">
+            <tr><td colspan="5" class="empty-state">No reports submitted yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- BUG REPORT -->
+    <section id="bug-report" class="panel section-block">
+      <div class="panel-heading">
+        <div>
+          <div class="eyebrow">APPLICATION SUPPORT</div>
+          <h2>Bug Report</h2>
+          <p class="muted">Record a problem with this college project interface.</p>
+        </div>
+      </div>
+
+      <form id="bugForm" class="form-grid">
+
+        <label>
+          Issue Title
+          <input id="bugTitle" required maxlength="80" placeholder="e.g. Map is not loading">
+        </label>
+
+        <label>
+          Severity
+          <select id="bugSeverity">
+            <option>Low</option>
+            <option selected>Medium</option>
+            <option>High</option>
+          </select>
+        </label>
+
+        <label class="full-width">
+          What Happened?
+          <textarea id="bugDescription" required maxlength="1000" placeholder="Steps to reproduce the problem..."></textarea>
+        </label>
+
+        <div class="full-width form-footer">
+          <span class="muted" id="bugFeedback">Bug reports are stored in this browser only.</span>
+          <button class="primary-button" type="submit">Save Bug Report</button>
+        </div>
+      </form>
+
+      <div id="bugList" class="record-list"></div>
+    </section>
+
+    <!-- RESOURCES -->
+    <section id="resources" class="panel section-block">
+      <div class="eyebrow">PUBLIC INFORMATION</div>
+      <h2>External Resources</h2>
+
+      <div class="resource-grid">
+        <a href="https://bhuvan.nrsc.gov.in/" target="_blank" rel="noopener noreferrer">
+          <strong>ISRO Bhuvan ↗</strong>
+          <small>Indian geoportal</small>
+        </a>
+
+        <a href="https://worldview.earthdata.nasa.gov/" target="_blank" rel="noopener noreferrer">
+          <strong>NASA Worldview ↗</strong>
+          <small>Public Earth observation</small>
+        </a>
+
+        <a href="https://browser.dataspace.copernicus.eu/" target="_blank" rel="noopener noreferrer">
+          <strong>Copernicus Browser ↗</strong>
+          <small>Public satellite imagery</small>
+        </a>
+
+        <a href="https://www.mha.gov.in/" target="_blank" rel="noopener noreferrer">
+          <strong>Ministry of Home Affairs ↗</strong>
+          <small>Official government information</small>
+        </a>
+
+        <a href="https://www.112.gov.in/" target="_blank" rel="noopener noreferrer">
+          <strong>Emergency 112 ↗</strong>
+          <small>National emergency service</small>
+        </a>
+
+        <a href="https://digitalsky.dgca.gov.in/" target="_blank" rel="noopener noreferrer">
+          <strong>Digital Sky ↗</strong>
+          <small>DGCA drone portal</small>
+        </a>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="settings" class="panel section-block">
+      <div class="eyebrow">PREFERENCES & ACCESS</div>
+      <h2>Settings</h2>
+
+      <div class="settings-grid">
+
+        <article class="setting-item">
+          <div>
+            <strong>Administrator Access</strong>
+            <small>Demo sign-in and session controls</small>
+          </div>
+          <button class="small-button" id="settingsLoginButton">Admin Login</button>
+        </article>
+
+        <article class="setting-item">
+          <div>
+            <strong>Notifications</strong>
+            <small>Show in-app demo notifications</small>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="notificationToggle" checked>
+            <span></span>
+          </label>
+        </article>
+
+        <article class="setting-item">
+          <div>
+            <strong>Appearance</strong>
+            <small>Switch between dark and light theme</small>
+          </div>
+          <select id="themeSelect">
+            <option value="dark">Dark Theme</option>
+            <option value="light">Light Theme</option>
+          </select>
+        </article>
+
+        <article class="setting-item">
+          <div>
+            <strong>Compact Layout</strong>
+            <small>Reduce card spacing</small>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="compactToggle">
+            <span></span>
+          </label>
+        </article>
+
+        <article class="setting-item">
+          <div>
+            <strong>Sound Effects</strong>
+            <small>Browser notification sound</small>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="soundToggle">
+            <span></span>
+          </label>
+        </article>
+
+        <article class="setting-item">
+          <div>
+            <strong>Data Management</strong>
+            <small>Export or clear local data</small>
+          </div>
+          <div class="button-row">
+            <button class="small-button" id="exportData">Export JSON</button>
+            <button class="small-button danger-button" id="clearData">Clear Data</button>
+          </div>
+        </article>
+
+      </div>
+
+      <p class="inline-note" id="adminStatus">Administrator: signed out</p>
+    </section>
+
+    <footer class="footer">
+      <strong>BHARAT SHIELD</strong>
+      <span>Academic Mini Project · Frontend Simulation Only</span>
+      <span>Not an official government or defence platform.</span>
+    </footer>
+
+  </main>
+</div>
+
+<!-- TOAST MESSAGE -->
+<div class="toast-region" id="toastRegion" aria-live="polite"></div>
+
+<!-- ADMIN LOGIN -->
+<dialog id="loginDialog" class="modal">
+  <form id="loginForm" method="dialog">
+
+    <div class="modal-top">
+      <div>
+        <div class="eyebrow">RESTRICTED DEMO AREA</div>
+        <h2>Administrator Login</h2>
+      </div>
+      <button type="button" class="close-button" id="closeLogin">×</button>
+    </div>
+
+    <p class="muted">Demo credentials are shown here for college testing.</p>
+
+    <label>
+      Administrator Email
+      <input id="adminEmail" type="email" autocomplete="username" placeholder="admin@bharatshield.demo" required>
+    </label>
+
+    <label>
+      Password
+      <input id="adminPassword" type="password" autocomplete="current-password" required>
+    </label>
+
+    <div class="face-auth-box">
+      <div class="face-auth-heading">
+        <strong>Face Verification</strong>
+        <span class="status-pill status-info" id="faceState">NOT VERIFIED</span>
+      </div>
+
+      <video id="faceVideo" autoplay muted playsinline></video>
+
+      <div class="button-row">
+        <button type="button" class="small-button" id="startFaceButton">Enable Camera</button>
+        <button type="button" class="small-button" id="scanFaceButton">Run Face Check</button>
+      </div>
+
+      <small class="muted">This is a simulated face check, not real biometric recognition.</small>
+    </div>
+
+    <p class="demo-credentials">
+      Demo Email: <b>admin@bharatshield.demo</b><br>
+      Password: <b>Shield@123</b>
+    </p>
+
+    <p class="error-text" id="loginError"></p>
+
+    <button class="primary-button full-button" type="submit">
+      Verify & Sign In
+    </button>
+  </form>
+</dialog>
+
+<!-- NOTIFICATIONS -->
+<dialog id="notificationDialog" class="modal">
+
+  <div class="modal-top">
+    <div>
+      <div class="eyebrow">ACTIVITY CENTER</div>
+      <h2>Notifications</h2>
+    </div>
+
+    <button class="close-button" id="closeNotifications">×</button>
+  </div>
+
+  <div id="notificationList" class="record-list">
+    <p class="empty-state">No notifications yet.</p>
+  </div>
+
+  <button class="small-button" id="clearNotifications">
+    Clear Notifications
+  </button>
+</dialog>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
